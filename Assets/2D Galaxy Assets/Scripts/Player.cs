@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -12,6 +13,11 @@ public class Player : MonoBehaviour
     [SerializeField] private float leftBoundary = -8.0f;
     [SerializeField] private float topBoundary = 8.0f;
     [SerializeField] private float bottomBoundary = -8.0f;
+
+    [SerializeField] private GameObject objectToSpawn;
+
+    [SerializeField] private float fireRate = 2f;
+    private float nextFire = 0.0f;
 
 
     void Start()
@@ -29,17 +35,16 @@ public class Player : MonoBehaviour
     {
         Movement();
         Boundries();
+        SpawnLaser();
     }
 
     void Movement()
     {
-        Vector3 moveCharacter = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
         float horizontalInput = Input.GetAxis("Horizontal");
         transform.Translate(Vector3.right*playerSpeed*horizontalInput*Time.deltaTime);
 
         float verticalInput = Input.GetAxis("Vertical");
         transform.Translate(Vector3.up*playerSpeed*verticalInput*Time.deltaTime);
-        //characterController.Move(playerSpeed * Time.deltaTime * moveCharacter);//7.5*0*(0,1)
     }
     private void Boundries()
     {
@@ -59,6 +64,16 @@ public class Player : MonoBehaviour
         else if (transform.position.y <= bottomBoundary)
         {
             transform.position = new Vector3(transform.position.x, topBoundary, transform.position.z);
+        }
+    }
+
+    private void SpawnLaser()
+    {
+        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))&& Time.time>nextFire) 
+        {
+            nextFire = Time.time + fireRate;
+            var laserSpawnLocation = new Vector3(transform.position.x, transform.position.y + 1,0);
+            GameObject laser = Instantiate(objectToSpawn, laserSpawnLocation, Quaternion.identity);
         }
     }
 }
