@@ -6,26 +6,24 @@ using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
-    private Vector3 startPosition = new Vector3(0, 0, 0);
-    [SerializeField] private float playerSpeed = 7.5f;
+    private Vector3 _startPosition = new Vector3(0, 0, 0);
+    [SerializeField] private float _playerSpeed = 7.5f;
 
-    [SerializeField] private float rightBoundary = 8.0f;
-    [SerializeField] private float leftBoundary = -8.0f;
-    [SerializeField] private float topBoundary = 8.0f;
-    [SerializeField] private float bottomBoundary = -8.0f;
+    [SerializeField] private GameObject _laserPrefab;
+    [SerializeField] private GameObject _tripleLaserPrefab;
 
-    [SerializeField] private GameObject objectToSpawn;
+    [SerializeField] private float _fireRate = 2f;
+    private float _nextFire = 0.0f;
 
-    [SerializeField] private float fireRate = 2f;
-    private float nextFire = 0.0f;
+    public bool canTripleShoot = false;
 
 
     void Start()
     {
-        if (transform.position.x != startPosition.x || transform.position.y != startPosition.y || transform.position.z != startPosition.z)
+        if (transform.position.x != _startPosition.x || transform.position.y != _startPosition.y || transform.position.z != _startPosition.z)
         {
-            Debug.Log($"position is not: x:{startPosition.x}, y:{startPosition.y} and z:{startPosition.z}"); 
-            transform.position = new Vector3(startPosition.x, startPosition.y, startPosition.z);
+            Debug.Log($"position is not: x:{_startPosition.x}, y:{_startPosition.y} and z:{_startPosition.z}"); 
+            transform.position = new Vector3(_startPosition.x, _startPosition.y, _startPosition.z);
 
         }
     }
@@ -40,14 +38,20 @@ public class Player : MonoBehaviour
 
     void Movement()
     {
-        float horizontalInput = Input.GetAxis("Horizontal");
-        transform.Translate(Vector3.right*playerSpeed*horizontalInput*Time.deltaTime);
+        float horizontalInput = Input.GetAxis("Horizontal");//-1,0,1
+        transform.Translate(Vector3.right*_playerSpeed*horizontalInput*Time.deltaTime);
 
         float verticalInput = Input.GetAxis("Vertical");
-        transform.Translate(Vector3.up*playerSpeed*verticalInput*Time.deltaTime);
+        transform.Translate(Vector3.up*_playerSpeed*verticalInput*Time.deltaTime);
     }
     private void Boundries()
     {
+        float rightBoundary = 8.0f;
+        float leftBoundary = -8.0f;
+        float topBoundary = 8.0f;
+        float bottomBoundary = -8.0f;
+
+
         if (transform.position.x >= rightBoundary)
         {
             transform.position = new Vector3(rightBoundary, transform.position.y, transform.position.z);
@@ -69,11 +73,31 @@ public class Player : MonoBehaviour
 
     private void SpawnLaser()
     {
-        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))&& Time.time>nextFire) 
+        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))&& Time.time>_nextFire) 
         {
-            nextFire = Time.time + fireRate;
-            var laserSpawnLocation = new Vector3(transform.position.x, transform.position.y + 1,0);
-            GameObject laser = Instantiate(objectToSpawn, laserSpawnLocation, Quaternion.identity);
+            _nextFire = Time.time + _fireRate;
+
+            if (canTripleShoot == true )
+            {
+                Instantiate(_tripleLaserPrefab, transform.position, Quaternion.identity);
+
+            }
+            else
+            {
+                Instantiate(_laserPrefab, transform.position, Quaternion.identity);
+                Debug.Log($"Y position of single laser: ${transform.position.y}");
+            }
         }
+    }
+    public void TripleShotPowerOn()
+    {
+        canTripleShoot = true;
+        TripleShotPowerDownRoutine();
+    }
+
+    public IEnumerator TripleShotPowerDownRoutine()
+    {
+        yield return new WaitForSeconds(5.0f);
+        canTripleShoot = false;
     }
 }
