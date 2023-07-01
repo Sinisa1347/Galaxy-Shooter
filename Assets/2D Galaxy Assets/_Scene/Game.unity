@@ -153,7 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _powerupPrefab: {fileID: 6631922362927748965, guid: e471d5dadb6f4fb45b1bb72d1ba3f3a8, type: 3}
-  cooldown: 10
+  cooldown: 20
 --- !u!4 &342090267
 Transform:
   m_ObjectHideFlags: 0
@@ -260,6 +260,52 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &750393648
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 750393650}
+  - component: {fileID: 750393649}
+  m_Layer: 0
+  m_Name: SpeedPowerupSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &750393649
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 750393648}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2ab5c15c27ca764ab04fd4d7e6768cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _powerupPrefab: {fileID: 5624615941206952919, guid: 593eb8aab80355741a5e5a8ec629c1eb, type: 3}
+  cooldown: 20
+--- !u!4 &750393650
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 750393648}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 6, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1461154123
 GameObject:
@@ -406,7 +452,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ce0ac45a721ca87428baf46272058904, type: 2}
+  - {fileID: 2100000, guid: eb9a7edb235e69846860536dc0868211, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -487,7 +533,7 @@ MonoBehaviour:
   _playerSpeed: 7.5
   _laserPrefab: {fileID: 9022922513152638797, guid: fe23630289355c14fb921e8ceb47fb73, type: 3}
   _tripleLaserPrefab: {fileID: 1117517324221873133, guid: e46f38e09d02db5418fb28542d04677c, type: 3}
-  _fireRate: 2
+  _fireRate: 0.00005
   canTripleShoot: 0
 --- !u!212 &2012164814
 SpriteRenderer:
@@ -549,8 +595,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2012164812}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.33, y: 5.46, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0}
+  m_LocalPosition: {x: -0.43, y: -0.46, z: 0}
+  m_LocalScale: {x: 0.47845, y: 0.49135, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -609,7 +655,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2012164812}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0

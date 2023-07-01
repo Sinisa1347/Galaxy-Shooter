@@ -101,4 +101,19 @@ public class Player : MonoBehaviour
         canTripleShoot = false;
         Debug.Log($"Can triple shot {canTripleShoot}");
     }
+
+
+    public void SpeedPowerOn()
+    {
+        _playerSpeed = 15.0f;
+        Debug.Log($"Current player speed is {_playerSpeed}");
+        StartCoroutine(SpeedPowerDownCoroutine());
+    }
+
+    public IEnumerator SpeedPowerDownCoroutine()
+    {
+        yield return new WaitForSeconds(5.0f);
+        _playerSpeed = 7.5f;
+        Debug.Log($"Current player speed is {_playerSpeed}");
+    }
 }
