@@ -3,51 +3,41 @@ using UnityEngine.UIElements;
 
 public class Powerup : MonoBehaviour
 {
-    //[SerializeField] private GameObject _powerupPrefab;
-    //[SerializeField] private float cooldown = 10.0f;
-    //private float nextTimespawn = 0.0f;
-    private float speed = 10.0f;
-    //public float currentTime = 0.0f;
-    //private GameObject clonePowerup;
+    [SerializeField] private GameObject _powerupPrefab;
+    [SerializeField] private float spawnCooldown = 20.0f;
+    private float nextTimeSpawn = 0.0f;
+    private float speed = 5.0f;
+    private GameObject powerupClone;
     // Start is called before the first frame update
     void Start()
     {
-        //nextTimeSpawn = Time.time + cooldown;
-        //Debug.Log($"Next time spawn is: {nextTimeSpawn}");
-        //nextTimespawn = cooldown;
+        nextTimeSpawn = Time.time + spawnCooldown;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(powerupClone && powerupClone.transform.position.y < -4)
+        {
+            Destroy(powerupClone);
+        }
 
-        transform.Translate(Vector3.down *speed * Time.deltaTime);
-        //currentTime += Time.deltaTime;
+        if(Time.time > nextTimeSpawn) 
+        {
+            nextTimeSpawn = Time.time + spawnCooldown;
+            powerupClone = Instantiate(_powerupPrefab, RandomSpawn(), Quaternion.identity);
+        }
 
-        //if(currentTime> nextTimespawn ) 
-        //{
-        //    Debug.Log(currentTime);
-        //    Debug.Log(nextTimespawn);
-            
-        //    CreateClone();
-        //}
-
-        //if (clonePowerup && clonePowerup.transform.position.y < -4)
-        //{
-        //    Destroy(clonePowerup);
-        //}
+        if (powerupClone)
+        {
+            powerupClone.transform.Translate(Vector3.down * speed * Time.deltaTime);
+        }
     }
 
-    //void CreateClone()
-    //{
-    //    clonePowerup = Instantiate(this.gameObject, RandomSpawn(), Quaternion.identity);
-    //    clonePowerup.transform.Translate(Vector3.down * speed * Time.deltaTime);
-    //}
-
-    //Vector3 RandomSpawn()
-    //{
-    //    return new Vector3(Random.Range(-8, 8), 4,0);
-    //}
+    Vector3 RandomSpawn()
+    {
+        return new Vector3(Random.Range(-8, 8), 5, 0);
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -59,9 +49,9 @@ public class Powerup : MonoBehaviour
             if (player)
             {
                 player.TripleShotPowerOn();
-            }
 
-            Destroy(this.gameObject);
+                Destroy(this.gameObject);
+            }
         }
     }
 }

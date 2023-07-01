@@ -123,6 +123,52 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &342090265
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 342090267}
+  - component: {fileID: 342090266}
+  m_Layer: 0
+  m_Name: TripleShotPowerupSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &342090266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 342090265}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2ab5c15c27ca764ab04fd4d7e6768cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _powerupPrefab: {fileID: 6631922362927748965, guid: e471d5dadb6f4fb45b1bb72d1ba3f3a8, type: 3}
+  cooldown: 10
+--- !u!4 &342090267
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 342090265}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 6, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -299,118 +345,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!1001 &1556064274
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 312320724426374458, guid: 02dd7ce8d5de3814f8b090854c409e58, type: 3}
-      propertyPath: _powerupPrefab
-      value: 
-      objectReference: {fileID: 5084564713520542124, guid: 02dd7ce8d5de3814f8b090854c409e58, type: 3}
-    - target: {fileID: 5084564713520542124, guid: 02dd7ce8d5de3814f8b090854c409e58, type: 3}
-      propertyPath: m_Name
-      value: Powerup_TripleShot
-      objectReference: {fileID: 0}
-    - target: {fileID: 5084564713520542124, guid: 02dd7ce8d5de3814f8b090854c409e58, type: 3}
-      propertyPath: m_TagString
-      value: Untagged
-      objectReference: {fileID: 0}
-    - target: {fileID: 7110340296971422229, guid: 02dd7ce8d5de3814f8b090854c409e58, type: 3}
-      propertyPath: m_RootOrder
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 7110340296971422229, guid: 02dd7ce8d5de3814f8b090854c409e58, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.15
-      objectReference: {fileID: 0}
-    - target: {fileID: 7110340296971422229, guid: 02dd7ce8d5de3814f8b090854c409e58, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 4.16
-      objectReference: {fileID: 0}
-    - target: {fileID: 7110340296971422229, guid: 02dd7ce8d5de3814f8b090854c409e58, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7110340296971422229, guid: 02dd7ce8d5de3814f8b090854c409e58, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7110340296971422229, guid: 02dd7ce8d5de3814f8b090854c409e58, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7110340296971422229, guid: 02dd7ce8d5de3814f8b090854c409e58, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7110340296971422229, guid: 02dd7ce8d5de3814f8b090854c409e58, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7110340296971422229, guid: 02dd7ce8d5de3814f8b090854c409e58, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7110340296971422229, guid: 02dd7ce8d5de3814f8b090854c409e58, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7110340296971422229, guid: 02dd7ce8d5de3814f8b090854c409e58, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 5084564713520542124, guid: 02dd7ce8d5de3814f8b090854c409e58, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1840852725}
-  m_SourcePrefab: {fileID: 100100000, guid: 02dd7ce8d5de3814f8b090854c409e58, type: 3}
---- !u!1 &1840852721 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5084564713520542124, guid: 02dd7ce8d5de3814f8b090854c409e58, type: 3}
-  m_PrefabInstance: {fileID: 1556064274}
-  m_PrefabAsset: {fileID: 0}
---- !u!58 &1840852725
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1840852721}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 1.1655844
 --- !u!1 &1870182388
 GameObject:
   m_ObjectHideFlags: 0
@@ -615,12 +549,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2012164812}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.41, y: -0.01, z: 0}
+  m_LocalPosition: {x: 0.33, y: 5.46, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &2012164816
 BoxCollider2D:

@@ -12,7 +12,7 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject _laserPrefab;
     [SerializeField] private GameObject _tripleLaserPrefab;
 
-    [SerializeField] private float _fireRate = 2f;
+    [SerializeField] private float _fireRate = 0.00005f;
     private float _nextFire = 0.0f;
 
     public bool canTripleShoot = false;
@@ -22,7 +22,7 @@ public class Player : MonoBehaviour
     {
         if (transform.position.x != _startPosition.x || transform.position.y != _startPosition.y || transform.position.z != _startPosition.z)
         {
-            Debug.Log($"position is not: x:{_startPosition.x}, y:{_startPosition.y} and z:{_startPosition.z}"); 
+            Debug.Log($"position is not (0,0,0), placing player on: x:{_startPosition.x}, y:{_startPosition.y} and z:{_startPosition.z}"); 
             transform.position = new Vector3(_startPosition.x, _startPosition.y, _startPosition.z);
 
         }
@@ -73,9 +73,9 @@ public class Player : MonoBehaviour
 
     private void SpawnLaser()
     {
-        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))&& Time.time>_nextFire) 
+        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))&& Time.time>=_nextFire) 
         {
-            _nextFire = Time.time + _fireRate;
+            _nextFire += _fireRate;
 
             if (canTripleShoot == true )
             {
@@ -85,19 +85,20 @@ public class Player : MonoBehaviour
             else
             {
                 Instantiate(_laserPrefab, transform.position, Quaternion.identity);
-                Debug.Log($"Y position of single laser: ${transform.position.y}");
             }
         }
     }
     public void TripleShotPowerOn()
     {
         canTripleShoot = true;
-        TripleShotPowerDownRoutine();
+        Debug.Log($"Can triple shot {canTripleShoot}");
+        StartCoroutine(TripleShotPowerDownRoutine());
     }
 
     public IEnumerator TripleShotPowerDownRoutine()
     {
         yield return new WaitForSeconds(5.0f);
         canTripleShoot = false;
+        Debug.Log($"Can triple shot {canTripleShoot}");
     }
 }
