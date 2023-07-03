@@ -25,8 +25,6 @@ public class Powerup : MonoBehaviour
         Debug.Log($"And its tag is {_powerupPrefab.tag}");
 
         IsOtherCollidedObjectPlayer(other, _powerupPrefab);
-
-
     }
 
     private void IsOtherCollidedObjectPlayer(Collider2D other, GameObject _powerupPrefab)

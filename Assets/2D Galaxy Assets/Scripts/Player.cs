@@ -12,10 +12,14 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject _laserPrefab;
     [SerializeField] private GameObject _tripleLaserPrefab;
 
-    [SerializeField] private float _fireRate = 0.00005f;
+    [SerializeField] private GameObject playerExplosion;
+
+    [SerializeField] private float _fireRate = 0.0005f;
     private float _nextFire = 0.0f;
 
     public bool canTripleShoot = false;
+
+    public int numberOfLives = 3;
 
 
     void Start()
@@ -34,6 +38,12 @@ public class Player : MonoBehaviour
         Movement();
         Boundries();
         SpawnLaser();
+
+        if (numberOfLives < 1)
+        {
+            Instantiate(playerExplosion, transform.position, Quaternion.identity);
+            Destroy(gameObject);
+        }
     }
 
     void Movement()
@@ -48,8 +58,8 @@ public class Player : MonoBehaviour
     {
         float rightBoundary = 8.0f;
         float leftBoundary = -8.0f;
-        float topBoundary = 8.0f;
-        float bottomBoundary = -8.0f;
+        float topBoundary = 6.0f;
+        float bottomBoundary = -6.0f;
 
 
         if (transform.position.x >= rightBoundary)
@@ -105,7 +115,7 @@ public class Player : MonoBehaviour
 
     public void SpeedPowerOn()
     {
-        _playerSpeed = 15.0f;
+        _playerSpeed = _playerSpeed*1.5f;
         Debug.Log($"Current player speed is {_playerSpeed}");
         StartCoroutine(SpeedPowerDownCoroutine());
     }
@@ -115,5 +125,12 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(5.0f);
         _playerSpeed = 7.5f;
         Debug.Log($"Current player speed is {_playerSpeed}");
+    }
+
+    public int ReduceLife(int numberOfLives)
+    {
+        numberOfLives -= 1;
+        Debug.Log($"Remaining number of lives for player: {numberOfLives}");
+        return numberOfLives;
     }
 }
