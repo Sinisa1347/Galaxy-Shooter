@@ -9,17 +9,23 @@ public class Player : MonoBehaviour
     private Vector3 _startPosition = new Vector3(0, 0, 0);
     [SerializeField] private float _playerSpeed = 7.5f;
 
-    [SerializeField] private GameObject _laserPrefab;
-    [SerializeField] private GameObject _tripleLaserPrefab;
-
-    [SerializeField] private GameObject playerExplosion;
+    [SerializeField] private GameObject _singleShot;
+    [SerializeField] private GameObject _tripleShot;
+    [SerializeField] private GameObject _playerExplosion;
+    [SerializeField] private GameObject _playerShield;
 
     [SerializeField] private float _fireRate = 0.0005f;
+    [SerializeField] private bool canTripleShoot = false;
+    [SerializeField] private int numberOfLives = 3;
+
+    private UIManager UIManager;
+
     private float _nextFire = 0.0f;
+    public bool isShieldOn = false;
+    private float shieldTimeDuration = 10.0f;
 
-    public bool canTripleShoot = false;
-
-    public int numberOfLives = 3;
+    int newNumberOfTheSamePowerups = 0;
+    int lastNumberForMultiplePowerups =0;
 
 
     void Start()
@@ -28,7 +34,12 @@ public class Player : MonoBehaviour
         {
             Debug.Log($"position is not (0,0,0), placing player on: x:{_startPosition.x}, y:{_startPosition.y} and z:{_startPosition.z}"); 
             transform.position = new Vector3(_startPosition.x, _startPosition.y, _startPosition.z);
+        }
 
+        UIManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+        if (UIManager)
+        {
+            UIManager.UpdateLivese(numberOfLives);
         }
     }
 
@@ -38,11 +49,12 @@ public class Player : MonoBehaviour
         Movement();
         Boundries();
         SpawnLaser();
+        //ShieldIsActiveOnPlayer();
 
         if (numberOfLives < 1)
         {
-            Instantiate(playerExplosion, transform.position, Quaternion.identity);
-            Destroy(gameObject);
+            Instantiate(_playerExplosion, transform.position, Quaternion.identity);
+            Destroy(this.gameObject);
         }
     }
 
@@ -89,12 +101,12 @@ public class Player : MonoBehaviour
 
             if (canTripleShoot == true )
             {
-                Instantiate(_tripleLaserPrefab, transform.position, Quaternion.identity);
+                Instantiate(_tripleShot, transform.position, Quaternion.identity);
 
             }
             else
             {
-                Instantiate(_laserPrefab, transform.position, Quaternion.identity);
+                Instantiate(_singleShot, transform.position, Quaternion.identity);
             }
         }
     }
@@ -105,13 +117,12 @@ public class Player : MonoBehaviour
         StartCoroutine(TripleShotPowerDownRoutine());
     }
 
-    public IEnumerator TripleShotPowerDownRoutine()
+    private IEnumerator TripleShotPowerDownRoutine()
     {
         yield return new WaitForSeconds(5.0f);
         canTripleShoot = false;
         Debug.Log($"Can triple shot {canTripleShoot}");
     }
-
 
     public void SpeedPowerOn()
     {
@@ -120,17 +131,72 @@ public class Player : MonoBehaviour
         StartCoroutine(SpeedPowerDownCoroutine());
     }
 
-    public IEnumerator SpeedPowerDownCoroutine()
+    private IEnumerator SpeedPowerDownCoroutine()
     {
         yield return new WaitForSeconds(5.0f);
         _playerSpeed = 7.5f;
         Debug.Log($"Current player speed is {_playerSpeed}");
     }
 
-    public int ReduceLife(int numberOfLives)
+    public void ReduceLife()
     {
-        numberOfLives -= 1;
-        Debug.Log($"Remaining number of lives for player: {numberOfLives}");
-        return numberOfLives;
+        if (isShieldOn == true)
+        {
+            //Debug.Log("Shield saved your life");
+            _playerShield.SetActive(false);
+            isShieldOn = false;
+
+        }
+        else
+        {
+            numberOfLives -= 1;
+
+            UIManager.UpdateLivese(numberOfLives);
+            //Debug.Log($"Remaining number of lives for player: {numberOfLives}");
+        }
+    }
+
+    public void ShieldPowerOn()
+    {
+        newNumberOfTheSamePowerups += 1;
+        _playerShield.SetActive(true);
+        isShieldOn = true;
+        if (newNumberOfTheSamePowerups == 1) 
+        {
+            StartCoroutine("WaitForMultipleOfTheSamePowerupsCoroutine");
+        }
+    }
+
+    private IEnumerator WaitForMultipleOfTheSamePowerupsCoroutine()
+    {
+        Debug.Log($"Start counting for {shieldTimeDuration}");
+        yield return new WaitForSeconds(shieldTimeDuration);
+        Debug.Log($"{shieldTimeDuration} have passed");
+        if (newNumberOfTheSamePowerups == 1)
+        {
+            PowerupTurnOff();
+        }
+
+        else if (lastNumberForMultiplePowerups < newNumberOfTheSamePowerups)
+        {
+            lastNumberForMultiplePowerups += 1;
+            Debug.Log($"lastNumberForMultiplePowerups {lastNumberForMultiplePowerups}");
+            Debug.Log($"newNumberOfTheSamePowerups {newNumberOfTheSamePowerups}");
+            //Debug.Log($"Time has been extended to: {shieldTimeDuration*newNumberOfTheSamePowerups}");
+            StartCoroutine("WaitForMultipleOfTheSamePowerupsCoroutine");
+        }
+        else if(lastNumberForMultiplePowerups == newNumberOfTheSamePowerups)
+        {
+            Debug.Log($"Number of the same powerups picked up = {newNumberOfTheSamePowerups}");
+            Debug.Log("lastNumberForMultiplePowerups == newNumberOfTheSamePowerups");
+            PowerupTurnOff();
+        }
+    }
+
+    private void PowerupTurnOff()
+    {
+        Debug.Log("Shields is inactive and is shield on is false");
+        isShieldOn = false;
+        _playerShield.SetActive(false);
     }
 }

@@ -20,12 +20,12 @@ public class Laser : MonoBehaviour
 
     }
 
-    void LaserCloneFired()
+    private void LaserCloneFired()
     {
         transform.Translate(Vector3.up * speed * Time.deltaTime);
     }
 
-    void DestroyLaserClone()
+    private void DestroyLaserClone()
     {
         if (this.GameObject() && transform.position.y >= 5.5)
         {
