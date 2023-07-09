@@ -12,12 +12,14 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float speed = 4.0f;
     [SerializeField] private GameObject enemyExplosion;
     [SerializeField] private AnimationClip enemyExplosionAnimationClip;
-
+    
+    private GameManager _gameManager;
     private UIManager _UIManager;
     // Start is called before the first frame update
     void Start()
     {
         _UIManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+        _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
 
     // Update is called once per frame
@@ -28,6 +30,11 @@ public class Enemy : MonoBehaviour
         if (transform.position.y <= -6.5)
         {
             transform.position = GenerateNewSpawn();
+        }
+
+        if (_gameManager.gameOver == true)
+        {
+            Destroy(this.gameObject);
         }
     }
 
@@ -45,6 +52,8 @@ public class Enemy : MonoBehaviour
             if (player!=null)
             {
                 player.ReduceLife();
+                Instantiate(enemyExplosion, transform.position, Quaternion.identity);
+                Destroy(this.gameObject);
             }
         }
 
@@ -59,20 +68,13 @@ public class Enemy : MonoBehaviour
                 if (laser.gameObject.transform.parent != null)
                 {
                     Destroy(laser.transform.parent.gameObject);
-                    _UIManager.UpdateScore(100);
                 }
                 else
                 {
-                    _UIManager.UpdateScore(100);
                     Destroy(laser.gameObject);
                 }
+                _UIManager.UpdateScore(100);
             }
         }
     }
-
-    //private IEnumerable DestroyThisObjectAfterExploding()
-    //{
-    //    yield return new WaitForSeconds(enemyExplosionAnimationClip.length);
-    //    Destroy(this.gameObject);
-    //}
 }

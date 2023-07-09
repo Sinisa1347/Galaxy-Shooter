@@ -42,15 +42,15 @@ public class Powerup : MonoBehaviour
 
             if (player && _powerupPrefab.tag == "Powerup_TripleShot")
             {
-                player.TripleShotPowerOn();
+                player.TripleShotPowerOn(_powerupPrefab.tag);
             }
             else if (player && _powerupPrefab.tag == "Powerup_Speed")
             {
-                player.SpeedPowerOn();
+                player.SpeedPowerOn(_powerupPrefab.tag);
             }
             else if(player && _powerupPrefab.tag == "Powerup_Shield")
             {
-                player.ShieldPowerOn();
+                player.ShieldPowerOn(_powerupPrefab.tag);
             }
 
             Destroy(this.gameObject);

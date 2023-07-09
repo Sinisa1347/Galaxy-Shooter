@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -12,37 +14,35 @@ public class Spawner : MonoBehaviour
     [SerializeField] private float cooldown = 10.0f;
     [SerializeField] private float speed = 4.0f;
     private float nextTimeSpawn = 0.0f;
-    
+
+    private GameManager _gameManager;
 
     // Start is called before the first frame update
     void Start()
     {
         nextTimeSpawn = Time.time + cooldown;
-
+        _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
 
     void Update()
     {
-        foreach (var _powerupToSpawn in _powerupsToSpawn)
-        {
-            if (_powerupToSpawn && _powerupToSpawn.tag != "Enemy" && _powerupToSpawn.transform.position.y < -4)
-            {
-                Destroy(_powerupToSpawn);
-            }
-        }
-
         if (Time.time > nextTimeSpawn)
         {
             nextTimeSpawn = Time.time + cooldown;
 
             int randomNumber = Random.Range(0, _powerupsToSpawn.Length);
 
-            InstantiatePrefav(_powerupsToSpawn[randomNumber]);
+            InstantiatePrefav(_powerupsToSpawn[1]);
 
             foreach (var _enemyToSpawn in _enemiesToSpawn)
             {
                 InstantiatePrefav(_enemyToSpawn);
             }
+        }
+
+        if (_gameManager.gameOver == true)
+        {
+            Destroy(this.gameObject);
         }
     }
 
@@ -53,14 +53,14 @@ public class Spawner : MonoBehaviour
 
     private void InstantiatePrefav(GameObject _objectToSpawn)
     {
-        Instantiate(_objectToSpawn, RandomSpawn(), Quaternion.identity);
-        if (_objectToSpawn)
+        GameObject _clonedObjectToSpawn = Instantiate(_objectToSpawn, RandomSpawn(), Quaternion.identity);
+        if (_clonedObjectToSpawn)
         {
-            _objectToSpawn.transform.Translate(Vector3.down * speed * Time.deltaTime);
+            _clonedObjectToSpawn.transform.Translate(Vector3.down * speed * Time.deltaTime);
 
-            if (_objectToSpawn && _objectToSpawn.tag != "Enemy" && _objectToSpawn.transform.position.y < -4)
+            if (_clonedObjectToSpawn && _clonedObjectToSpawn.tag != "Enemy" && _clonedObjectToSpawn.transform.position.y < -4)
             {
-                Destroy(_objectToSpawn);
+                Destroy(_clonedObjectToSpawn);
             }
         }
     }

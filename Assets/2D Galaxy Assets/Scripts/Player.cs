@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.U2D.Animation;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 using UnityEngine.UI;
@@ -18,14 +19,24 @@ public class Player : MonoBehaviour
     [SerializeField] private bool canTripleShoot = false;
     [SerializeField] private int numberOfLives = 3;
 
-    private UIManager UIManager;
+    private UIManager _UIManager;
+    private GameManager _gameManager;
 
     private float _nextFire = 0.0f;
     public bool isShieldOn = false;
-    private float shieldTimeDuration = 10.0f;
 
-    int newNumberOfTheSamePowerups = 0;
-    int lastNumberForMultiplePowerups =0;
+    private float shieldTimeDuration = 10.0f;
+    private float _tripleShotTimeDuration = 10.0f;
+    private float _speedTimeDuration = 10.0f;
+
+    private int _newNumberOfShieldPickedUp = 0;
+    private int _lastNumberOfShieldPickedUp = 0;
+
+    private int _newNumberOfSpeedPickedUp = 0;
+    private int _lastNumberOfSpeedPickedUp = 0;
+
+    private int _newNumberOfTripleShotPickedUp = 0;
+    private int _lastNumberOfTripleShotPickedUp = 0;
 
 
     void Start()
@@ -36,11 +47,13 @@ public class Player : MonoBehaviour
             transform.position = new Vector3(_startPosition.x, _startPosition.y, _startPosition.z);
         }
 
-        UIManager = GameObject.Find("Canvas").GetComponent<UIManager>();
-        if (UIManager)
+        _UIManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+        if (_UIManager)
         {
-            UIManager.UpdateLivese(numberOfLives);
+            _UIManager.UpdateLives(numberOfLives);
         }
+
+        _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
 
     // Update is called once per frame
@@ -50,12 +63,6 @@ public class Player : MonoBehaviour
         Boundries();
         SpawnLaser();
         //ShieldIsActiveOnPlayer();
-
-        if (numberOfLives < 1)
-        {
-            Instantiate(_playerExplosion, transform.position, Quaternion.identity);
-            Destroy(this.gameObject);
-        }
     }
 
     void Movement()
@@ -110,30 +117,42 @@ public class Player : MonoBehaviour
             }
         }
     }
-    public void TripleShotPowerOn()
+    public void TripleShotPowerOn(string tag)
     {
         canTripleShoot = true;
-        Debug.Log($"Can triple shot {canTripleShoot}");
-        StartCoroutine(TripleShotPowerDownRoutine());
+
+        _newNumberOfTripleShotPickedUp += 1;
+
+        object[] paramsForCoroutine = new object[] { _tripleShotTimeDuration, _newNumberOfTripleShotPickedUp, _lastNumberOfTripleShotPickedUp, tag };
+        if (_newNumberOfTripleShotPickedUp == 1)
+        {
+            StartCoroutine("WaitForMultipleOfTheSamePowerupsCoroutine", paramsForCoroutine);
+        }
     }
 
-    private IEnumerator TripleShotPowerDownRoutine()
+    private void TripleShotPowerUpTurnOff()
     {
-        yield return new WaitForSeconds(5.0f);
         canTripleShoot = false;
         Debug.Log($"Can triple shot {canTripleShoot}");
     }
 
-    public void SpeedPowerOn()
+    public void SpeedPowerOn(string tag)
     {
-        _playerSpeed = _playerSpeed*1.5f;
-        Debug.Log($"Current player speed is {_playerSpeed}");
-        StartCoroutine(SpeedPowerDownCoroutine());
+        _playerSpeed =11.0f;
+        //Debug.Log($"Current player speed is {_playerSpeed}");
+        //StartCoroutine(SpeedPowerDownCoroutine());
+
+        _newNumberOfSpeedPickedUp += 1;
+
+        object[] paramsForCoroutine = new object[] { _speedTimeDuration, _newNumberOfSpeedPickedUp, _lastNumberOfSpeedPickedUp, tag };
+        if (_newNumberOfSpeedPickedUp == 1)
+        {
+            StartCoroutine("WaitForMultipleOfTheSamePowerupsCoroutine", paramsForCoroutine);
+        }
     }
 
-    private IEnumerator SpeedPowerDownCoroutine()
+    private void SpeedPowerUpTurnOff()
     {
-        yield return new WaitForSeconds(5.0f);
         _playerSpeed = 7.5f;
         Debug.Log($"Current player speed is {_playerSpeed}");
     }
@@ -150,50 +169,92 @@ public class Player : MonoBehaviour
         else
         {
             numberOfLives -= 1;
-
-            UIManager.UpdateLivese(numberOfLives);
-            //Debug.Log($"Remaining number of lives for player: {numberOfLives}");
+            if (numberOfLives>0)
+            {
+                _UIManager.UpdateScore(-100);
+                _UIManager.UpdateLives(numberOfLives);
+            }
+            else if(numberOfLives==0)
+            {
+                _UIManager.UpdateScore(-100);
+                _UIManager.UpdateLives(numberOfLives);
+                Instantiate(_playerExplosion, transform.position, Quaternion.identity);
+                _gameManager.gameOver = true;
+                _UIManager.ShowMainMenu();
+                Destroy(this.gameObject);
+            }
         }
     }
 
-    public void ShieldPowerOn()
+    public void ShieldPowerOn(string tag)
     {
-        newNumberOfTheSamePowerups += 1;
+        _newNumberOfShieldPickedUp += 1;
         _playerShield.SetActive(true);
         isShieldOn = true;
-        if (newNumberOfTheSamePowerups == 1) 
+        object[] paramsForCoroutine = new object[] { shieldTimeDuration, _newNumberOfShieldPickedUp, _lastNumberOfShieldPickedUp, tag };
+        if (_newNumberOfShieldPickedUp == 1) 
         {
-            StartCoroutine("WaitForMultipleOfTheSamePowerupsCoroutine");
+            StartCoroutine("WaitForMultipleOfTheSamePowerupsCoroutine", paramsForCoroutine);
         }
     }
 
-    private IEnumerator WaitForMultipleOfTheSamePowerupsCoroutine()
+    private IEnumerator WaitForMultipleOfTheSamePowerupsCoroutine(object[] paramsForCoroutine)
     {
-        Debug.Log($"Start counting for {shieldTimeDuration}");
-        yield return new WaitForSeconds(shieldTimeDuration);
-        Debug.Log($"{shieldTimeDuration} have passed");
-        if (newNumberOfTheSamePowerups == 1)
+        float timeDuration = (float)paramsForCoroutine[0];
+        int newNumberOfPowerUpPickedUp = (int)paramsForCoroutine[1];
+        int lastNumberOfPowerUpPickedUp = (int)paramsForCoroutine[2];
+        string nameOfPowerUp = (string)paramsForCoroutine[3];
+
+        Debug.Log($"Name of the powerup is {nameOfPowerUp}");
+
+        Debug.Log($"Start counting for {timeDuration}");
+        yield return new WaitForSeconds(timeDuration);
+        Debug.Log($"{timeDuration} have passed");
+
+
+        if (nameOfPowerUp == "Powerup_TripleShot")
         {
-            PowerupTurnOff();
+            newNumberOfPowerUpPickedUp = _newNumberOfTripleShotPickedUp;
+        }
+        else if (nameOfPowerUp == "Powerup_Speed")
+        {
+            newNumberOfPowerUpPickedUp = _newNumberOfSpeedPickedUp;
+        }
+        else if (nameOfPowerUp == "Powerup_Shield")
+        {
+            newNumberOfPowerUpPickedUp = _newNumberOfShieldPickedUp;
         }
 
-        else if (lastNumberForMultiplePowerups < newNumberOfTheSamePowerups)
+        if (lastNumberOfPowerUpPickedUp < newNumberOfPowerUpPickedUp-1)
         {
-            lastNumberForMultiplePowerups += 1;
-            Debug.Log($"lastNumberForMultiplePowerups {lastNumberForMultiplePowerups}");
-            Debug.Log($"newNumberOfTheSamePowerups {newNumberOfTheSamePowerups}");
-            //Debug.Log($"Time has been extended to: {shieldTimeDuration*newNumberOfTheSamePowerups}");
-            StartCoroutine("WaitForMultipleOfTheSamePowerupsCoroutine");
+            Debug.Log($"lastNumberOfPowerUpPickedUp {lastNumberOfPowerUpPickedUp}");
+            lastNumberOfPowerUpPickedUp += 1;
+            Debug.Log($"newNumberOfPowerUpPickedUp {newNumberOfPowerUpPickedUp}");
+
+            object paramsToStartCoroutineAgain = new object[] {timeDuration,newNumberOfPowerUpPickedUp,lastNumberOfPowerUpPickedUp,nameOfPowerUp};
+
+            StartCoroutine("WaitForMultipleOfTheSamePowerupsCoroutine", paramsToStartCoroutineAgain);
         }
-        else if(lastNumberForMultiplePowerups == newNumberOfTheSamePowerups)
+        else if(lastNumberOfPowerUpPickedUp+1 == newNumberOfPowerUpPickedUp)
         {
-            Debug.Log($"Number of the same powerups picked up = {newNumberOfTheSamePowerups}");
-            Debug.Log("lastNumberForMultiplePowerups == newNumberOfTheSamePowerups");
-            PowerupTurnOff();
+            Debug.Log($"lastNumberOfPowerUpPickedUp== newNumberOfPowerUpPickedUp");
+
+            if (nameOfPowerUp == "Powerup_TripleShot")
+            {
+                TripleShotPowerUpTurnOff();
+            }
+            else if (nameOfPowerUp == "Powerup_Speed")
+            {
+                SpeedPowerUpTurnOff();
+            }
+            else if (nameOfPowerUp == "Powerup_Shield")
+            {
+                ShieldPowerUpTurnOff();
+            }
         }
     }
 
-    private void PowerupTurnOff()
+    private void ShieldPowerUpTurnOff()
     {
         Debug.Log("Shields is inactive and is shield on is false");
         isShieldOn = false;
