@@ -122,6 +122,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _powerupPrefab: {fileID: 8754178546226490910}
   _powerupSpeed: 5
+  _powerupSoundPickUp: {fileID: 8300000, guid: 5ee343246919d2b4bba63ae629e95494, type: 3}
 --- !u!58 &-6832264865085192592
 CircleCollider2D:
   m_ObjectHideFlags: 0

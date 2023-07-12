@@ -32,7 +32,7 @@ public class Spawner : MonoBehaviour
 
             int randomNumber = Random.Range(0, _powerupsToSpawn.Length);
 
-            InstantiatePrefav(_powerupsToSpawn[1]);
+            InstantiatePrefav(_powerupsToSpawn[randomNumber]);
 
             foreach (var _enemyToSpawn in _enemiesToSpawn)
             {

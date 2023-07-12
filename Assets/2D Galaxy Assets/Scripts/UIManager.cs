@@ -37,7 +37,6 @@ public class UIManager : MonoBehaviour
     {
         _mainMenu.SetActive(true);
         _playerLives.SetActive(false);
-        //_playerScore.SetActive(false);
     }
 
     public void HideMainMenu()

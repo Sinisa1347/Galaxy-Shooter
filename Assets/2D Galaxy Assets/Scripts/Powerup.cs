@@ -6,6 +6,7 @@ public class Powerup : MonoBehaviour
 {
     [SerializeField] private GameObject _powerupPrefab;
     [SerializeField] private float _powerupSpeed=5.0f;
+    [SerializeField] private AudioClip _powerupSoundPickUp;
 
     // Start is called before the first frame update
     void Start()
@@ -38,6 +39,7 @@ public class Powerup : MonoBehaviour
     {
         if (other.tag == "Player")
         {
+            AudioSource.PlayClipAtPoint(_powerupSoundPickUp, Camera.main.transform.position, 0.75f);
             Player player = other.GetComponent<Player>();
 
             if (player && _powerupPrefab.tag == "Powerup_TripleShot")

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7476754892996768315}
   - component: {fileID: 7744191370065641957}
   - component: {fileID: 4553961417613343007}
+  - component: {fileID: 6219722045052700320}
   m_Layer: 0
   m_Name: Powerup_TripleShot
   m_TagString: Powerup_TripleShot
@@ -32,7 +33,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &7476754892996768315
 SpriteRenderer:
@@ -135,3 +136,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _powerupPrefab: {fileID: 6631922362927748965}
   _powerupSpeed: 5
+  _powerupSoundPickUp: {fileID: 8300000, guid: 5ee343246919d2b4bba63ae629e95494, type: 3}
+--- !u!95 &6219722045052700320
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6631922362927748965}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 524fdc4289c0b4444b72de02a82996a8, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

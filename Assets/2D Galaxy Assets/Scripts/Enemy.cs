@@ -11,8 +11,10 @@ public class Enemy : MonoBehaviour
 {
     [SerializeField] private float speed = 4.0f;
     [SerializeField] private GameObject enemyExplosion;
-    [SerializeField] private AnimationClip enemyExplosionAnimationClip;
-    
+    [SerializeField] private AudioClip _enemyExplosionSound;
+    [SerializeField] private GameObject _leftThruster;
+    [SerializeField] private GameObject _rightThruster;
+
     private GameManager _gameManager;
     private UIManager _UIManager;
     // Start is called before the first frame update
@@ -54,16 +56,17 @@ public class Enemy : MonoBehaviour
                 player.ReduceLife();
                 Instantiate(enemyExplosion, transform.position, Quaternion.identity);
                 Destroy(this.gameObject);
+                AudioSource.PlayClipAtPoint(_enemyExplosionSound, Camera.main.transform.position, 0.75f);
             }
         }
-
-        if (other.gameObject.tag == "Laser")
+        else if (other.gameObject.tag == "Laser")
         {
             Laser laser = other.gameObject.GetComponent<Laser>();
             if (laser != null)
             {
                 Instantiate(enemyExplosion, transform.position, Quaternion.identity);
                 Destroy(this.gameObject);
+                AudioSource.PlayClipAtPoint(_enemyExplosionSound, Camera.main.transform.position, 0.75f);
 
                 if (laser.gameObject.transform.parent != null)
                 {
@@ -73,6 +76,7 @@ public class Enemy : MonoBehaviour
                 {
                     Destroy(laser.gameObject);
                 }
+
                 _UIManager.UpdateScore(100);
             }
         }

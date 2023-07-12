@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor.U2D.Animation;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public class Player : MonoBehaviour
 {
@@ -12,15 +14,23 @@ public class Player : MonoBehaviour
 
     [SerializeField] private GameObject _singleShot;
     [SerializeField] private GameObject _tripleShot;
-    [SerializeField] private GameObject _playerExplosion;
+    [SerializeField] private GameObject _playerExplosionAnimation;
     [SerializeField] private GameObject _playerShield;
 
     [SerializeField] private float _fireRate = 0.0005f;
     [SerializeField] private bool canTripleShoot = false;
     [SerializeField] private int numberOfLives = 3;
 
+    [SerializeField] private AudioClip _playerExplosionSound;
+    [SerializeField] private GameObject _playerHurtLeftSide;
+    [SerializeField] private GameObject _playerHurtRightSide;
+
+    //[SerializeField] private GameObject _playerTurnRight;
+    //[SerializeField] private GameObject _playerTurnLeft;
+
     private UIManager _UIManager;
     private GameManager _gameManager;
+    private AudioSource _audioSource;
 
     private float _nextFire = 0.0f;
     public bool isShieldOn = false;
@@ -54,6 +64,10 @@ public class Player : MonoBehaviour
         }
 
         _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        _audioSource = this.GetComponent<AudioSource>();
+
+        _playerHurtLeftSide.SetActive(false);
+        _playerHurtRightSide.SetActive(false);
     }
 
     // Update is called once per frame
@@ -62,13 +76,22 @@ public class Player : MonoBehaviour
         Movement();
         Boundries();
         SpawnLaser();
-        //ShieldIsActiveOnPlayer();
     }
 
     void Movement()
     {
         float horizontalInput = Input.GetAxis("Horizontal");//-1,0,1
-        transform.Translate(Vector3.right*_playerSpeed*horizontalInput*Time.deltaTime);
+
+        //if(horizontalInput == -1)
+        //{
+        //    Instantiate(_playerTurnLeft, transform.position, Quaternion.identity);
+        //}
+        //else if(horizontalInput == 1) 
+        //{ 
+        //    Instantiate(_playerTurnRight,transform.position, Quaternion.identity);
+        //}
+
+        transform.Translate(Vector3.right * _playerSpeed * horizontalInput * Time.deltaTime);
 
         float verticalInput = Input.GetAxis("Vertical");
         transform.Translate(Vector3.up*_playerSpeed*verticalInput*Time.deltaTime);
@@ -109,12 +132,12 @@ public class Player : MonoBehaviour
             if (canTripleShoot == true )
             {
                 Instantiate(_tripleShot, transform.position, Quaternion.identity);
-
             }
             else
             {
                 Instantiate(_singleShot, transform.position, Quaternion.identity);
             }
+            _audioSource.Play();
         }
     }
     public void TripleShotPowerOn(string tag)
@@ -133,6 +156,8 @@ public class Player : MonoBehaviour
     private void TripleShotPowerUpTurnOff()
     {
         canTripleShoot = false;
+        _newNumberOfTripleShotPickedUp = 0;
+        _lastNumberOfTripleShotPickedUp = 0;
         Debug.Log($"Can triple shot {canTripleShoot}");
     }
 
@@ -154,6 +179,8 @@ public class Player : MonoBehaviour
     private void SpeedPowerUpTurnOff()
     {
         _playerSpeed = 7.5f;
+        _newNumberOfSpeedPickedUp = 0;
+        _lastNumberOfSpeedPickedUp = 0;
         Debug.Log($"Current player speed is {_playerSpeed}");
     }
 
@@ -173,15 +200,27 @@ public class Player : MonoBehaviour
             {
                 _UIManager.UpdateScore(-100);
                 _UIManager.UpdateLives(numberOfLives);
+
+                if (numberOfLives == 2)
+                {
+                    //_playerHurtLeftSide.SetActive(true);
+                    RandomizePlayerHurtWing();
+                }
+                if(numberOfLives == 1) 
+                {
+                    //_playerHurtRightSide.SetActive(true);
+                    RandomizePlayerHurtWing();
+                }
             }
             else if(numberOfLives==0)
             {
                 _UIManager.UpdateScore(-100);
                 _UIManager.UpdateLives(numberOfLives);
-                Instantiate(_playerExplosion, transform.position, Quaternion.identity);
+                Instantiate(_playerExplosionAnimation, transform.position, Quaternion.identity);
+                Destroy(this.gameObject);
+                AudioSource.PlayClipAtPoint(_playerExplosionSound, Camera.main.transform.position, 0.75f);
                 _gameManager.gameOver = true;
                 _UIManager.ShowMainMenu();
-                Destroy(this.gameObject);
             }
         }
     }
@@ -196,6 +235,15 @@ public class Player : MonoBehaviour
         {
             StartCoroutine("WaitForMultipleOfTheSamePowerupsCoroutine", paramsForCoroutine);
         }
+    }
+
+    private void ShieldPowerUpTurnOff()
+    {
+        Debug.Log("Shields is inactive and is shield on is false");
+        isShieldOn = false;
+        _newNumberOfShieldPickedUp = 0;
+        _lastNumberOfShieldPickedUp = 0;
+        _playerShield.SetActive(false);
     }
 
     private IEnumerator WaitForMultipleOfTheSamePowerupsCoroutine(object[] paramsForCoroutine)
@@ -254,10 +302,35 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void ShieldPowerUpTurnOff()
+    private void RandomizePlayerHurtWing()
     {
-        Debug.Log("Shields is inactive and is shield on is false");
-        isShieldOn = false;
-        _playerShield.SetActive(false);
+        int randomNumber = Random.Range(0, 2);
+
+        if(randomNumber == 0)
+        {
+            if (_playerHurtLeftSide.activeSelf == true)
+            {
+                _playerHurtRightSide.SetActive(true);
+                Debug.Log("Player hurt on right side");
+            }
+            else
+            {
+                _playerHurtLeftSide.SetActive(true);
+                Debug.Log("Player hurt on left side");
+            }
+        }
+        else if(randomNumber == 1)
+        {
+            if (_playerHurtRightSide.activeSelf == true)
+            {
+                _playerHurtLeftSide.SetActive(true);
+                Debug.Log("Player hurt on left side");
+            }
+            else
+            {
+                _playerHurtRightSide.SetActive(true);
+                Debug.Log("Player hurt on right side");
+            }
+        }
     }
 }
