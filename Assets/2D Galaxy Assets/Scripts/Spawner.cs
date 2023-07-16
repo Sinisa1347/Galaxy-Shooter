@@ -1,9 +1,3 @@
-using System;
-using System.Collections;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using Unity.Mathematics;
-using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
 

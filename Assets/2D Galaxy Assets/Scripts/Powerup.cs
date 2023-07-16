@@ -1,17 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Powerup : MonoBehaviour
 {
-    [SerializeField] private GameObject _powerupPrefab;
-    [SerializeField] private float _powerupSpeed=5.0f;
+    [SerializeField] private float _powerupSpeed = 5.0f;
     [SerializeField] private AudioClip _powerupSoundPickUp;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -19,7 +16,7 @@ public class Powerup : MonoBehaviour
     {
         transform.Translate(Vector3.down * Time.deltaTime * _powerupSpeed);
 
-        if(transform.position.y < -6.5f)
+        if (transform.position.y < -6.5f)
         {
             Destroy(this.gameObject);
         }
@@ -32,7 +29,7 @@ public class Powerup : MonoBehaviour
         //Debug.Log($"Current powerup prefab is {_powerupPrefab}");
         //Debug.Log($"And its tag is {_powerupPrefab.tag}");
 
-        IsOtherCollidedObjectPlayer(other, _powerupPrefab);
+        IsOtherCollidedObjectPlayer(other, this.gameObject);
     }
 
     private void IsOtherCollidedObjectPlayer(Collider2D other, GameObject _powerupPrefab)
@@ -50,7 +47,7 @@ public class Powerup : MonoBehaviour
             {
                 player.SpeedPowerOn(_powerupPrefab.tag);
             }
-            else if(player && _powerupPrefab.tag == "Powerup_Shield")
+            else if (player && _powerupPrefab.tag == "Powerup_Shield")
             {
                 player.ShieldPowerOn(_powerupPrefab.tag);
             }

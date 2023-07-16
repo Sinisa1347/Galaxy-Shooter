@@ -1,9 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor;
-using UnityEditor.Animations;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -12,16 +6,14 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float speed = 4.0f;
     [SerializeField] private GameObject enemyExplosion;
     [SerializeField] private AudioClip _enemyExplosionSound;
-    [SerializeField] private GameObject _leftThruster;
-    [SerializeField] private GameObject _rightThruster;
 
     private GameManager _gameManager;
-    private UIManager _UIManager;
+    private UIManagerInGame _UIManagerInGame;
     // Start is called before the first frame update
     void Start()
     {
-        _UIManager = GameObject.Find("Canvas").GetComponent<UIManager>();
-        _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        _UIManagerInGame = GameObject.FindGameObjectWithTag("CanvasInGame").GetComponent<UIManagerInGame>();
+        _gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
     }
 
     // Update is called once per frame
@@ -43,15 +35,15 @@ public class Enemy : MonoBehaviour
     Vector3 GenerateNewSpawn()
     {
         float randomX = Random.Range(-8.0f, 8.0f);
-        return new Vector3(randomX, 6.5f,0);
+        return new Vector3(randomX, 6.5f, 0);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.gameObject.tag == "Player")
+        if (other.gameObject.tag == "Player")
         {
             Player player = other.gameObject.GetComponent<Player>();
-            if (player!=null)
+            if (player != null)
             {
                 player.ReduceLife();
                 Instantiate(enemyExplosion, transform.position, Quaternion.identity);
@@ -77,7 +69,7 @@ public class Enemy : MonoBehaviour
                     Destroy(laser.gameObject);
                 }
 
-                _UIManager.UpdateScore(100);
+                _UIManagerInGame.UpdateScore(100);
             }
         }
     }

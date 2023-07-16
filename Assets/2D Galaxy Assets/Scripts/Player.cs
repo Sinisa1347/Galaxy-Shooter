@@ -1,11 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor.U2D.Animation;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
-using UnityEngine.UI;
-using UnityEngine.UIElements;
 
 public class Player : MonoBehaviour
 {
@@ -28,7 +22,7 @@ public class Player : MonoBehaviour
     //[SerializeField] private GameObject _playerTurnRight;
     //[SerializeField] private GameObject _playerTurnLeft;
 
-    private UIManager _UIManager;
+    private UIManagerInGame _UIManagerInGame;
     private GameManager _gameManager;
     private AudioSource _audioSource;
 
@@ -53,17 +47,17 @@ public class Player : MonoBehaviour
     {
         if (transform.position.x != _startPosition.x || transform.position.y != _startPosition.y || transform.position.z != _startPosition.z)
         {
-            Debug.Log($"position is not (0,0,0), placing player on: x:{_startPosition.x}, y:{_startPosition.y} and z:{_startPosition.z}"); 
+            Debug.Log($"position is not (0,0,0), placing player on: x:{_startPosition.x}, y:{_startPosition.y} and z:{_startPosition.z}");
             transform.position = new Vector3(_startPosition.x, _startPosition.y, _startPosition.z);
         }
 
-        _UIManager = GameObject.Find("Canvas").GetComponent<UIManager>();
-        if (_UIManager)
+        _UIManagerInGame = GameObject.FindWithTag("CanvasInGame").GetComponent<UIManagerInGame>();
+        if (_UIManagerInGame)
         {
-            _UIManager.UpdateLives(numberOfLives);
+            _UIManagerInGame.UpdateLives(numberOfLives);
         }
 
-        _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        _gameManager = GameObject.FindWithTag("GameManager").GetComponent<GameManager>();
         _audioSource = this.GetComponent<AudioSource>();
 
         _playerHurtLeftSide.SetActive(false);
@@ -73,28 +67,28 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Movement();
+        if (_gameManager.isGamePaused == false)
+        {
+            Movement();
+            SpawnLaser();
+        }
+
         Boundries();
-        SpawnLaser();
+
+        if(_gameManager.gameOver == true)
+        {
+            Destroy(this.gameObject);
+        }
     }
 
     void Movement()
     {
         float horizontalInput = Input.GetAxis("Horizontal");//-1,0,1
 
-        //if(horizontalInput == -1)
-        //{
-        //    Instantiate(_playerTurnLeft, transform.position, Quaternion.identity);
-        //}
-        //else if(horizontalInput == 1) 
-        //{ 
-        //    Instantiate(_playerTurnRight,transform.position, Quaternion.identity);
-        //}
-
         transform.Translate(Vector3.right * _playerSpeed * horizontalInput * Time.deltaTime);
 
         float verticalInput = Input.GetAxis("Vertical");
-        transform.Translate(Vector3.up*_playerSpeed*verticalInput*Time.deltaTime);
+        transform.Translate(Vector3.up * _playerSpeed * verticalInput * Time.deltaTime);
     }
     private void Boundries()
     {
@@ -108,12 +102,12 @@ public class Player : MonoBehaviour
         {
             transform.position = new Vector3(rightBoundary, transform.position.y, transform.position.z);
         }
-        else if(transform.position.x <= leftBoundary)
+        else if (transform.position.x <= leftBoundary)
         {
-            transform.position = new Vector3(leftBoundary,transform.position.y,transform.position.z);
+            transform.position = new Vector3(leftBoundary, transform.position.y, transform.position.z);
         }
 
-        if(transform.position.y >= topBoundary)
+        if (transform.position.y >= topBoundary)
         {
             transform.position = new Vector3(transform.position.x, bottomBoundary, transform.position.z);
         }
@@ -125,11 +119,11 @@ public class Player : MonoBehaviour
 
     private void SpawnLaser()
     {
-        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))&& Time.time>=_nextFire) 
+        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0)) && Time.time >= _nextFire)
         {
             _nextFire += _fireRate;
 
-            if (canTripleShoot == true )
+            if (canTripleShoot == true)
             {
                 Instantiate(_tripleShot, transform.position, Quaternion.identity);
             }
@@ -163,7 +157,7 @@ public class Player : MonoBehaviour
 
     public void SpeedPowerOn(string tag)
     {
-        _playerSpeed =11.0f;
+        _playerSpeed = 11.0f;
         //Debug.Log($"Current player speed is {_playerSpeed}");
         //StartCoroutine(SpeedPowerDownCoroutine());
 
@@ -196,31 +190,30 @@ public class Player : MonoBehaviour
         else
         {
             numberOfLives -= 1;
-            if (numberOfLives>0)
+            if (numberOfLives > 0)
             {
-                _UIManager.UpdateScore(-100);
-                _UIManager.UpdateLives(numberOfLives);
+                _UIManagerInGame.UpdateScore(-100);
+                _UIManagerInGame.UpdateLives(numberOfLives);
 
                 if (numberOfLives == 2)
                 {
                     //_playerHurtLeftSide.SetActive(true);
                     RandomizePlayerHurtWing();
                 }
-                if(numberOfLives == 1) 
+                if (numberOfLives == 1)
                 {
                     //_playerHurtRightSide.SetActive(true);
                     RandomizePlayerHurtWing();
                 }
             }
-            else if(numberOfLives==0)
+            else if (numberOfLives == 0)
             {
-                _UIManager.UpdateScore(-100);
-                _UIManager.UpdateLives(numberOfLives);
+                _UIManagerInGame.UpdateScore(-100);
+                _UIManagerInGame.UpdateLives(numberOfLives);
                 Instantiate(_playerExplosionAnimation, transform.position, Quaternion.identity);
                 Destroy(this.gameObject);
                 AudioSource.PlayClipAtPoint(_playerExplosionSound, Camera.main.transform.position, 0.75f);
                 _gameManager.gameOver = true;
-                _UIManager.ShowMainMenu();
             }
         }
     }
@@ -231,7 +224,7 @@ public class Player : MonoBehaviour
         _playerShield.SetActive(true);
         isShieldOn = true;
         object[] paramsForCoroutine = new object[] { shieldTimeDuration, _newNumberOfShieldPickedUp, _lastNumberOfShieldPickedUp, tag };
-        if (_newNumberOfShieldPickedUp == 1) 
+        if (_newNumberOfShieldPickedUp == 1)
         {
             StartCoroutine("WaitForMultipleOfTheSamePowerupsCoroutine", paramsForCoroutine);
         }
@@ -273,17 +266,17 @@ public class Player : MonoBehaviour
             newNumberOfPowerUpPickedUp = _newNumberOfShieldPickedUp;
         }
 
-        if (lastNumberOfPowerUpPickedUp < newNumberOfPowerUpPickedUp-1)
+        if (lastNumberOfPowerUpPickedUp < newNumberOfPowerUpPickedUp - 1)
         {
             Debug.Log($"lastNumberOfPowerUpPickedUp {lastNumberOfPowerUpPickedUp}");
             lastNumberOfPowerUpPickedUp += 1;
             Debug.Log($"newNumberOfPowerUpPickedUp {newNumberOfPowerUpPickedUp}");
 
-            object paramsToStartCoroutineAgain = new object[] {timeDuration,newNumberOfPowerUpPickedUp,lastNumberOfPowerUpPickedUp,nameOfPowerUp};
+            object paramsToStartCoroutineAgain = new object[] { timeDuration, newNumberOfPowerUpPickedUp, lastNumberOfPowerUpPickedUp, nameOfPowerUp };
 
             StartCoroutine("WaitForMultipleOfTheSamePowerupsCoroutine", paramsToStartCoroutineAgain);
         }
-        else if(lastNumberOfPowerUpPickedUp+1 == newNumberOfPowerUpPickedUp)
+        else if (lastNumberOfPowerUpPickedUp + 1 == newNumberOfPowerUpPickedUp)
         {
             Debug.Log($"lastNumberOfPowerUpPickedUp== newNumberOfPowerUpPickedUp");
 
@@ -306,7 +299,7 @@ public class Player : MonoBehaviour
     {
         int randomNumber = Random.Range(0, 2);
 
-        if(randomNumber == 0)
+        if (randomNumber == 0)
         {
             if (_playerHurtLeftSide.activeSelf == true)
             {
@@ -319,7 +312,7 @@ public class Player : MonoBehaviour
                 Debug.Log("Player hurt on left side");
             }
         }
-        else if(randomNumber == 1)
+        else if (randomNumber == 1)
         {
             if (_playerHurtRightSide.activeSelf == true)
             {

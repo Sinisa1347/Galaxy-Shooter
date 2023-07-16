@@ -1,19 +1,16 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Net.Mail;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
 
-public class UIManager : MonoBehaviour
+public class UIManagerInGame : MonoBehaviour
 {
     [SerializeField] private Sprite[] lives;
     [SerializeField] private Image livesImageDisplay;
     [SerializeField] private GameObject _mainMenu;
     [SerializeField] private GameObject _playerLives;
     [SerializeField] private GameObject _playerScore;
+    [SerializeField] private GameObject _pauseButton;
+    [SerializeField] private GameObject _pauseMenu;
     public void UpdateLives(int currentLives)
     {
         livesImageDisplay.sprite = lives[currentLives];
@@ -28,22 +25,30 @@ public class UIManager : MonoBehaviour
         score.text = $"Score: {totalScore}";
     }
 
-    private void ResetScore()
+    public void ResetScore()
     {
         score.text = $"Score: {0}";
     }
 
-    public void ShowMainMenu()
+    public void ShowInGameMenu()
     {
-        _mainMenu.SetActive(true);
-        _playerLives.SetActive(false);
+        _playerLives.SetActive(true);
+        _pauseButton.SetActive(true);
+        _playerScore.SetActive(true);
     }
 
-    public void HideMainMenu()
+    public void HideInGameMenu()
     {
-        _mainMenu.SetActive(false);
-        _playerLives.SetActive(true);
-        _playerScore.SetActive(true);
-        ResetScore();
+        _playerLives.SetActive(false);
+        _pauseButton.SetActive(false);
+    }
+
+    public void ShowPauseMenu()
+    {
+        _pauseMenu.SetActive(true);
+    }
+    public void HidePauseMenu()
+    {
+        _pauseMenu.SetActive(false);
     }
 }

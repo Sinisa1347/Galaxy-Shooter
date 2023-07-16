@@ -9,6 +9,10 @@ TagManager:
   - Laser
   - Enemy
   - Powerup_Shield
+  - CanvasMainMenu
+  - CanvasInGame
+  - GameManager
+  - PauseButton
   layers:
   - Default
   - TransparentFX
