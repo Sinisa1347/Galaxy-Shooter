@@ -15,16 +15,14 @@ public class Player : MonoBehaviour
     [SerializeField] private bool canTripleShoot = false;
     [SerializeField] private int numberOfLives = 3;
 
-    [SerializeField] private AudioClip _playerExplosionSound;
+    private AudioSource _laserShotAudioSource;
+    private AudioSource _playerExplosionAudioSource;
+
     [SerializeField] private GameObject _playerHurtLeftSide;
     [SerializeField] private GameObject _playerHurtRightSide;
 
-    //[SerializeField] private GameObject _playerTurnRight;
-    //[SerializeField] private GameObject _playerTurnLeft;
-
     private UIManagerInGame _UIManagerInGame;
     private GameManager _gameManager;
-    private AudioSource _audioSource;
 
     private float _nextFire = 0.0f;
     public bool isShieldOn = false;
@@ -42,7 +40,6 @@ public class Player : MonoBehaviour
     private int _newNumberOfTripleShotPickedUp = 0;
     private int _lastNumberOfTripleShotPickedUp = 0;
 
-
     void Start()
     {
         if (transform.position.x != _startPosition.x || transform.position.y != _startPosition.y || transform.position.z != _startPosition.z)
@@ -58,10 +55,12 @@ public class Player : MonoBehaviour
         }
 
         _gameManager = GameObject.FindWithTag("GameManager").GetComponent<GameManager>();
-        _audioSource = this.GetComponent<AudioSource>();
 
         _playerHurtLeftSide.SetActive(false);
         _playerHurtRightSide.SetActive(false);
+
+        _laserShotAudioSource = GameObject.FindWithTag("AudioManager").GetComponent<AudioManager>()._laserShotSoundSource;
+        _playerExplosionAudioSource = GameObject.FindWithTag("AudioManager").GetComponent<AudioManager>()._explosionSoundSource;
     }
 
     // Update is called once per frame
@@ -75,7 +74,7 @@ public class Player : MonoBehaviour
 
         Boundries();
 
-        if(_gameManager.gameOver == true)
+        if (_gameManager.gameOver == true)
         {
             Destroy(this.gameObject);
         }
@@ -131,7 +130,7 @@ public class Player : MonoBehaviour
             {
                 Instantiate(_singleShot, transform.position, Quaternion.identity);
             }
-            _audioSource.Play();
+            _laserShotAudioSource.Play();
         }
     }
     public void TripleShotPowerOn(string tag)
@@ -158,9 +157,6 @@ public class Player : MonoBehaviour
     public void SpeedPowerOn(string tag)
     {
         _playerSpeed = 11.0f;
-        //Debug.Log($"Current player speed is {_playerSpeed}");
-        //StartCoroutine(SpeedPowerDownCoroutine());
-
         _newNumberOfSpeedPickedUp += 1;
 
         object[] paramsForCoroutine = new object[] { _speedTimeDuration, _newNumberOfSpeedPickedUp, _lastNumberOfSpeedPickedUp, tag };
@@ -182,7 +178,6 @@ public class Player : MonoBehaviour
     {
         if (isShieldOn == true)
         {
-            //Debug.Log("Shield saved your life");
             _playerShield.SetActive(false);
             isShieldOn = false;
 
@@ -197,12 +192,10 @@ public class Player : MonoBehaviour
 
                 if (numberOfLives == 2)
                 {
-                    //_playerHurtLeftSide.SetActive(true);
                     RandomizePlayerHurtWing();
                 }
                 if (numberOfLives == 1)
                 {
-                    //_playerHurtRightSide.SetActive(true);
                     RandomizePlayerHurtWing();
                 }
             }
@@ -212,7 +205,7 @@ public class Player : MonoBehaviour
                 _UIManagerInGame.UpdateLives(numberOfLives);
                 Instantiate(_playerExplosionAnimation, transform.position, Quaternion.identity);
                 Destroy(this.gameObject);
-                AudioSource.PlayClipAtPoint(_playerExplosionSound, Camera.main.transform.position, 0.75f);
+                AudioSource.PlayClipAtPoint(_playerExplosionAudioSource.clip, Camera.main.transform.position, 0.75f);
                 _gameManager.gameOver = true;
             }
         }

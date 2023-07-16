@@ -147,9 +147,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 4
   enemyExplosion: {fileID: 5649519351615932182, guid: 2d690e368e29744408961bf957cc146f, type: 3}
-  _enemyExplosionSound: {fileID: 8300000, guid: a885c043fab7e46438bba03ba9dab6bc, type: 3}
-  _leftThruster: {fileID: 0}
-  _rightThruster: {fileID: 0}
 --- !u!1001 &5553406538461747749
 PrefabInstance:
   m_ObjectHideFlags: 0

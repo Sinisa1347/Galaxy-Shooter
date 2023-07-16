@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,6 +5,7 @@ public class GoBackToGame : MonoBehaviour
 {
     [SerializeField] UIManagerInGame _UIManagerInGame;
     [SerializeField] GameManager _gameManager;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -23,6 +22,6 @@ public class GoBackToGame : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }

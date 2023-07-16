@@ -5,15 +5,17 @@ public class Enemy : MonoBehaviour
 {
     [SerializeField] private float speed = 4.0f;
     [SerializeField] private GameObject enemyExplosion;
-    [SerializeField] private AudioClip _enemyExplosionSound;
+    private AudioClip _enemyExplosionAudioClip;
 
     private GameManager _gameManager;
     private UIManagerInGame _UIManagerInGame;
+
     // Start is called before the first frame update
     void Start()
     {
         _UIManagerInGame = GameObject.FindGameObjectWithTag("CanvasInGame").GetComponent<UIManagerInGame>();
         _gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+        _enemyExplosionAudioClip = GameObject.FindWithTag("AudioManager").GetComponent<AudioManager>()._explosionSoundSource.clip;
     }
 
     // Update is called once per frame
@@ -48,7 +50,7 @@ public class Enemy : MonoBehaviour
                 player.ReduceLife();
                 Instantiate(enemyExplosion, transform.position, Quaternion.identity);
                 Destroy(this.gameObject);
-                AudioSource.PlayClipAtPoint(_enemyExplosionSound, Camera.main.transform.position, 0.75f);
+                AudioSource.PlayClipAtPoint(_enemyExplosionAudioClip, Camera.main.transform.position, 0.75f);
             }
         }
         else if (other.gameObject.tag == "Laser")
@@ -58,7 +60,7 @@ public class Enemy : MonoBehaviour
             {
                 Instantiate(enemyExplosion, transform.position, Quaternion.identity);
                 Destroy(this.gameObject);
-                AudioSource.PlayClipAtPoint(_enemyExplosionSound, Camera.main.transform.position, 0.75f);
+                AudioSource.PlayClipAtPoint(_enemyExplosionAudioClip, Camera.main.transform.position, 0.75f);
 
                 if (laser.gameObject.transform.parent != null)
                 {

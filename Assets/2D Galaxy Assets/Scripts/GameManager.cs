@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -14,14 +13,13 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //_UIManager = GameObject.Find("CanvasInGame").GetComponent<UIManagerInGame>();
         isGamePaused = false;
         _UIManagerInGame.GetComponent<UIManagerInGame>();
         _UIManagerInMainMenu.GetComponent<UIManagerInMainMenus>();
         _startGameButton = _startGameButton.GetComponent<StartGameButton>();
     }
 
-    //// Update is called once per frame
+    // Update is called once per frame
     void Update()
     {
         if (gameOver == true)
@@ -36,7 +34,6 @@ public class GameManager : MonoBehaviour
             _UIManagerInMainMenu.HideMainMenu();
             _UIManagerInGame.ResetScore();
             _UIManagerInGame.ShowInGameMenu();
-
             _startGameButton.buttonPressed = false;
         }
     }

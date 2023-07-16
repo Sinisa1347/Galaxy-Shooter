@@ -3,12 +3,10 @@ using UnityEngine;
 public class PlayerAnimation : MonoBehaviour
 {
     private Animator _animator;
-    private GameManager _gameManager;
     // Start is called before the first frame update
     void Start()
     {
         _animator = GetComponent<Animator>();
-        _gameManager = GameObject.FindWithTag("GameManager").GetComponent<GameManager>();
     }
 
     // Update is called once per frame

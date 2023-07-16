@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,6 +5,7 @@ public class GoBack : MonoBehaviour
 {
     [SerializeField] UIManagerInMainMenus _UIManagerInMainMenu;
     [SerializeField] Button goBackButton;
+
     // Start is called before the first frame update
     void Start()
     {

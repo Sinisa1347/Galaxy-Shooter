@@ -3,12 +3,12 @@ using UnityEngine;
 public class Powerup : MonoBehaviour
 {
     [SerializeField] private float _powerupSpeed = 5.0f;
-    [SerializeField] private AudioClip _powerupSoundPickUp;
+    private AudioClip _powerupSound;
 
     // Start is called before the first frame update
     void Start()
     {
-
+        _powerupSound = GameObject.FindWithTag("AudioManager").GetComponent<AudioManager>()._powerUpSoundSource.clip;
     }
 
     // Update is called once per frame
@@ -24,11 +24,6 @@ public class Powerup : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        //Debug.Log($"Collided with {other.name}");
-
-        //Debug.Log($"Current powerup prefab is {_powerupPrefab}");
-        //Debug.Log($"And its tag is {_powerupPrefab.tag}");
-
         IsOtherCollidedObjectPlayer(other, this.gameObject);
     }
 
@@ -36,7 +31,7 @@ public class Powerup : MonoBehaviour
     {
         if (other.tag == "Player")
         {
-            AudioSource.PlayClipAtPoint(_powerupSoundPickUp, Camera.main.transform.position, 0.75f);
+            AudioSource.PlayClipAtPoint(_powerupSound, Camera.main.transform.position, 0.75f);
             Player player = other.GetComponent<Player>();
 
             if (player && _powerupPrefab.tag == "Powerup_TripleShot")
