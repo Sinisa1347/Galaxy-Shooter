@@ -4,19 +4,26 @@ using UnityEngine;
 public class Laser : MonoBehaviour
 {
     public float speed = 20.0f;
+    private GameManager _gameManager;
 
     // Start is called before the first frame update
     void Start()
     {
-
+        _gameManager = GameObject.FindWithTag("GameManager").GetComponent<GameManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        LaserCloneFired();
-        DestroyLaserClone();
-
+        if (_gameManager.gameOver == true)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            LaserCloneFired();
+            DestroyLaserClone();
+        }
     }
 
     private void LaserCloneFired()

@@ -4,21 +4,30 @@ public class Powerup : MonoBehaviour
 {
     [SerializeField] private float _powerupSpeed = 5.0f;
     private AudioClip _powerupSound;
+    private GameManager _gameManager;
 
     // Start is called before the first frame update
     void Start()
     {
         _powerupSound = GameObject.FindWithTag("AudioManager").GetComponent<AudioManager>()._powerUpSoundSource.clip;
+        _gameManager = GameObject.FindWithTag("GameManager").GetComponent<GameManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        transform.Translate(Vector3.down * Time.deltaTime * _powerupSpeed);
-
-        if (transform.position.y < -6.5f)
+        if(_gameManager.gameOver == true)
         {
             Destroy(this.gameObject);
+        }
+        else
+        {
+            transform.Translate(Vector3.down * Time.deltaTime * _powerupSpeed);
+
+            if (transform.position.y < -6.5f)
+            {
+                Destroy(this.gameObject);
+            }
         }
     }
 

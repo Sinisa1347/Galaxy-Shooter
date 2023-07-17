@@ -4,15 +4,15 @@ using UnityEngine.UI;
 public class GoBack : MonoBehaviour
 {
     [SerializeField] UIManagerInMainMenus _UIManagerInMainMenu;
-    [SerializeField] Button goBackButton;
 
     // Start is called before the first frame update
     void Start()
     {
         _UIManagerInMainMenu = _UIManagerInMainMenu.GetComponent<UIManagerInMainMenus>();
 
-        goBackButton.onClick.AddListener(() =>
+        this.GetComponent<Button>().onClick.AddListener(() =>
         {
+            Debug.Log("Button clicked");
             _UIManagerInMainMenu.HideSettings();
         });
     }
