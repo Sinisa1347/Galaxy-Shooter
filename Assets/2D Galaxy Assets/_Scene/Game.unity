@@ -4503,6 +4503,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _AudioManager: {fileID: 1044845279}
+  _backgroundVolumeSlider: {fileID: 565793820}
 --- !u!1 &1539393117
 GameObject:
   m_ObjectHideFlags: 0

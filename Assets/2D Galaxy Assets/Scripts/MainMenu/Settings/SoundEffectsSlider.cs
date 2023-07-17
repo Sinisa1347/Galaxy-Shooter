@@ -14,22 +14,24 @@ public class SoundEffectsVolumeSlider : MonoBehaviour
         _audioManager = _audioManager.GetComponent<AudioManager>();
         _slider.value = _audioManager._backgroundSoundSource.volume;
         _muteSoundEffect = _muteSoundEffect.GetComponent<MuteSoundEffect>();
+
+        _slider.onValueChanged.AddListener((value) =>
+        {
+            _muteSoundEffect.CurrentVolume(value);
+
+            if (_muteSoundEffect.IsMuted() == false)
+            {
+                _audioManager.ChangeSoundEffectsVolume(value);
+            }
+        });
     }
 
     // Update is called once per frame
     void Update()
     {
-        _slider.onValueChanged.AddListener((value) =>
+        if (_slider.value == _audioManager.GetDefaultVolume())
         {
-            if (_muteSoundEffect.IsMuted() == true)
-            {
-                _muteSoundEffect.CurrentVolume(value);
-            }
-            else if (_muteSoundEffect.IsMuted() == false)
-            {
-                _muteSoundEffect.CurrentVolume(value);
-                _audioManager.ChangeSoundEffectsVolume(value);
-            }
-        });
+            _muteSoundEffect.CurrentVolume(_audioManager.GetDefaultVolume());
+        }
     }
 }

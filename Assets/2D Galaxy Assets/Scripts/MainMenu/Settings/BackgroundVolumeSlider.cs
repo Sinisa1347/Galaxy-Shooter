@@ -14,22 +14,24 @@ public class BackgroundVolumeSlider : MonoBehaviour
         _audioManager = _audioManager.GetComponent<AudioManager>();
         _slider.value = _audioManager._backgroundSoundSource.volume;
         _muteBackgroundMusic = _muteBackgroundMusic.GetComponent<MuteBackgroundMusic>();
+
+        _slider.onValueChanged.AddListener((value) =>
+        {
+            _muteBackgroundMusic.CurrentVolume(value);
+
+            if (_muteBackgroundMusic.IsMuted() == false)
+            {
+                _audioManager.ChangeBackgroundMusicVolume(value);
+            }
+        });
     }
 
     // Update is called once per frame
     void Update()
     {
-        _slider.onValueChanged.AddListener((value) =>
+        if(_slider.value == _audioManager.GetDefaultVolume())
         {
-            if (_muteBackgroundMusic.IsMuted() == true)
-            {
-                _muteBackgroundMusic.CurrentVolume(value);
-            }
-            else if(_muteBackgroundMusic.IsMuted() == false)
-            {
-                _muteBackgroundMusic.CurrentVolume(value);
-                _audioManager.ChangeBackgroundMusicVolume(value);
-            }
-        });
+            _muteBackgroundMusic.CurrentVolume(_audioManager.GetDefaultVolume());
+        }
     }
 }

@@ -17,10 +17,11 @@ public class MuteSoundEffect : MonoBehaviour
         {
             if(_toggle.isOn==true)
             {
-                _AudioManager.ChangeSoundEffectsVolume(0);
+                _AudioManager.MuteSoundEffects();
             }
             else if (_toggle.isOn == false)
             {
+                _AudioManager.UnmuteSoundEffects();
                 _AudioManager.ChangeSoundEffectsVolume(volume);
             }
         });

@@ -1,11 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class MuteBackgroundMusic : MonoBehaviour
 {
     [SerializeField] private AudioManager _AudioManager;
+    [SerializeField] private BackgroundVolumeSlider _backgroundVolumeSlider;
     private Toggle _toggle;
     private float volume;
     // Start is called before the first frame update
@@ -15,15 +14,19 @@ public class MuteBackgroundMusic : MonoBehaviour
         _toggle = GetComponent<Toggle>();
         _toggle.isOn = false;
 
+        _backgroundVolumeSlider = _backgroundVolumeSlider.GetComponent<BackgroundVolumeSlider>();
+
         _toggle.onValueChanged.AddListener(delegate
         {
             if (_toggle.isOn == true)
             {
-                _AudioManager.ChangeBackgroundMusicVolume(0);
+                _AudioManager.MuteBackgroundMusic();
             }
             else if (_toggle.isOn == false)
             {
+                _AudioManager.UnmuteBackgroundMusic();
                 _AudioManager.ChangeBackgroundMusicVolume(volume);
+
             }
         });
     }
